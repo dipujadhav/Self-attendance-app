@@ -2,6 +2,8 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
+console.log("🚀 SELF LOG: Application Bootstrap Initiated");
+
 interface Props {
   children: ReactNode;
 }
@@ -48,11 +50,13 @@ class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-// Robust bootstrap
 const startApp = () => {
   try {
     const rootElement = document.getElementById('root');
-    if (!rootElement) throw new Error("Root element #root not found in DOM");
+    if (!rootElement) {
+      console.error("Fatal Error: Target #root not found");
+      return;
+    }
 
     const root = ReactDOM.createRoot(rootElement);
     root.render(
@@ -62,13 +66,16 @@ const startApp = () => {
         </ErrorBoundary>
       </React.StrictMode>
     );
+    console.log("✅ SELF LOG: React Render Complete");
   } catch (err) {
-    console.error("BOOTSTRAP ERROR:", err);
-    document.body.innerHTML = `<div style="padding:40px; color:#e11d48; font-family:sans-serif;"><h1>Fatal Load Error</h1><p>${err}</p></div>`;
+    console.error("FATAL BOOTSTRAP ERROR:", err);
+    const rootElement = document.getElementById('root');
+    if (rootElement) {
+        rootElement.innerHTML = `<div style="padding:40px; color:#ef4444; font-family:sans-serif;"><h1>Bootstrap Failed</h1><p>${err}</p></div>`;
+    }
   }
 };
 
-// Handle cases where script might run before DOM is fully ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', startApp);
 } else {
