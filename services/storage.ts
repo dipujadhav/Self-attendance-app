@@ -19,43 +19,48 @@ export const DEFAULT_DATA: AppData = {
 export const loadData = (): AppData => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_DATA;
+    if (!raw) return { ...DEFAULT_DATA };
     
-    const data = JSON.parse(raw);
+    let data = JSON.parse(raw);
     
-    // Defensive structural checks
-    if (!data || typeof data !== 'object') return DEFAULT_DATA;
+    // Defensive structural verification
+    if (!data || typeof data !== 'object') return { ...DEFAULT_DATA };
     
-    // Ensure profiles array exists and is not empty
+    // Ensure critical arrays and objects exist
     if (!Array.isArray(data.profiles) || data.profiles.length === 0) {
       data.profiles = [DEFAULT_PROFILE];
     }
     
-    // Ensure activeProfileId is valid
-    if (!data.activeProfileId || !data.profiles.some((p: WorkProfile) => p.id === data.activeProfileId)) {
+    if (!data.records || typeof data.records !== 'object') {
+      data.records = {};
+      data.profiles.forEach((p: any) => {
+        if (p.id) data.records[p.id] = {};
+      });
+    }
+
+    if (!data.activeProfileId || !data.profiles.some((p: any) => p.id === data.activeProfileId)) {
       data.activeProfileId = data.profiles[0].id;
     }
     
-    // Ensure records object exists
-    if (!data.records || typeof data.records !== 'object') {
-      data.records = { [data.activeProfileId]: {} };
+    if (typeof data.hasCompletedOnboarding !== 'boolean') {
+      data.hasCompletedOnboarding = false;
     }
     
     if (!data.theme) data.theme = 'light';
     
-    return data;
+    return data as AppData;
   } catch (e) {
-    console.error('Failed to load data from storage, falling back to defaults.', e);
-    return DEFAULT_DATA;
+    console.warn('Storage load failed, resetting to defaults.', e);
+    return { ...DEFAULT_DATA };
   }
 };
 
 export const saveData = (data: AppData) => {
   try {
-    if (!data) return;
+    if (!data || typeof data !== 'object') return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (e) {
-    console.error('Failed to save data', e);
+    console.error('Storage save failed.', e);
   }
 };
 
@@ -69,9 +74,7 @@ export const exportData = (data: AppData) => {
     a.download = `attendance_pro_backup_${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-  } catch (e) {
-    console.error('Failed to export data', e);
-  }
+  } catch (e) {}
 };
 
 export const importData = (file: File): Promise<AppData> => {
@@ -81,16 +84,16 @@ export const importData = (file: File): Promise<AppData> => {
       try {
         const result = e.target?.result as string;
         const data = JSON.parse(result);
-        if (data && data.profiles && data.records) {
-          resolve(data);
+        if (data && typeof data === 'object' && Array.isArray(data.profiles)) {
+          resolve(data as AppData);
         } else {
-          reject(new Error('Invalid data format'));
+          reject(new Error('Format Mismatch'));
         }
       } catch (err) {
         reject(err);
       }
     };
-    reader.onerror = () => reject(new Error('File read error'));
+    reader.onerror = () => reject(new Error('File access error'));
     reader.readAsText(file);
   });
 };
@@ -100,7 +103,5 @@ export const vibrate = (pattern: number | number[] = 10) => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(pattern);
     }
-  } catch (e) {
-    // Silent fail for Vibration API
-  }
+  } catch (e) {}
 };
