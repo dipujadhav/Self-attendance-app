@@ -11,17 +11,17 @@ const IntroView: React.FC<IntroViewProps> = ({ onComplete }) => {
 
   const slides = [
     {
-      icon: <CalendarCheck className="w-16 h-16 text-blue-600" />,
+      icon: <CalendarCheck className="w-16 h-16 text-blue-600 dark:text-blue-400" />,
       title: "Track Daily Work",
       desc: "Mark attendance, shifts, and overtime with a single tap. Keep your work log organized."
     },
     {
-      icon: <PieChart className="w-16 h-16 text-purple-600" />,
+      icon: <PieChart className="w-16 h-16 text-purple-600 dark:text-purple-400" />,
       title: "Smart Insights",
       desc: "Visualize your monthly performance. Generate PDF reports instantly for your records."
     },
     {
-      icon: <ShieldCheck className="w-16 h-16 text-emerald-600" />,
+      icon: <ShieldCheck className="w-16 h-16 text-emerald-600 dark:text-emerald-400" />,
       title: "Offline & Secure",
       desc: "Your data stays on your device. Works completely offline with secure local backup."
     }
@@ -38,19 +38,19 @@ const IntroView: React.FC<IntroViewProps> = ({ onComplete }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-between p-8 animate-fade-in">
+    <div className="fixed inset-0 z-50 bg-white dark:bg-slate-950 flex flex-col items-center justify-between p-8 animate-fade-in">
       <div className="w-full flex justify-end">
-        <button onClick={onComplete} className="text-slate-400 font-medium text-sm p-2">Skip</button>
+        <button onClick={onComplete} className="text-slate-400 dark:text-slate-600 font-medium text-sm p-2">Skip</button>
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center text-center max-w-xs mx-auto">
-        <div className="mb-10 p-6 bg-slate-50 rounded-[32px] shadow-sm border border-slate-100 animate-slide-up">
+        <div className="mb-10 p-6 bg-slate-50 dark:bg-slate-900 rounded-[32px] shadow-sm border border-slate-100 dark:border-slate-800 animate-slide-up">
             {slides[step].icon}
         </div>
-        <h2 className="text-3xl font-semibold text-slate-800 mb-4 animate-fade-in key-{step}">
+        <h2 className="text-3xl font-semibold text-slate-800 dark:text-white mb-4 animate-fade-in key-{step}">
             {slides[step].title}
         </h2>
-        <p className="text-base text-slate-500 font-normal leading-relaxed animate-fade-in key-{step}-desc">
+        <p className="text-base text-slate-500 dark:text-slate-400 font-normal leading-relaxed animate-fade-in key-{step}-desc">
             {slides[step].desc}
         </p>
       </div>
@@ -61,14 +61,14 @@ const IntroView: React.FC<IntroViewProps> = ({ onComplete }) => {
             {slides.map((_, i) => (
                 <div 
                     key={i} 
-                    className={`h-2 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-blue-600' : 'w-2 bg-slate-200'}`} 
+                    className={`h-2 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-blue-600 dark:bg-blue-400' : 'w-2 bg-slate-200 dark:bg-slate-800'}`} 
                 />
             ))}
         </div>
 
         <button 
             onClick={handleNext}
-            className="w-full py-4 bg-blue-600 text-white rounded-2xl font-semibold text-lg shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center justify-center gap-2"
+            className="w-full py-4 bg-blue-600 dark:bg-blue-500 text-white rounded-2xl font-semibold text-lg shadow-xl shadow-blue-200 dark:shadow-none active:scale-95 transition-all flex items-center justify-center gap-2"
         >
             {step === slides.length - 1 ? (
                 <>Get Started <Check className="w-5 h-5" /></>

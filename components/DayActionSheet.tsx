@@ -43,20 +43,20 @@ const DayActionSheet: React.FC<DayActionSheetProps> = ({ date, initialRecord, on
 
     return (
         <div className="fixed inset-0 z-[100] flex items-end justify-center no-print px-0 sm:px-4">
-            <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm animate-fade-in" onClick={onClose} />
+            <div className="absolute inset-0 bg-slate-950/40 dark:bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose} />
             
-            <div className="bg-white w-full max-w-lg rounded-t-[48px] sm:rounded-[48px] sm:mb-8 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.4)] animate-sheet-up flex flex-col max-h-[94vh] relative overflow-hidden border border-slate-100">
+            <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[48px] sm:rounded-[48px] sm:mb-8 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.4)] dark:shadow-none animate-sheet-up flex flex-col max-h-[94vh] relative overflow-hidden border border-slate-100 dark:border-slate-800">
                 
-                <div className="w-16 h-1.5 bg-slate-100 rounded-full mx-auto mt-5 mb-1" />
+                <div className="w-16 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full mx-auto mt-5 mb-1" />
 
                 <div className="px-8 pb-4 pt-4 flex justify-between items-center">
                     <div>
-                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] mb-1 font-display">{format(date, 'yyyy')}</div>
-                        <h3 className="text-3xl font-extrabold text-slate-950 font-display tracking-tight leading-none">{format(date, 'EEEE, MMM d')}</h3>
+                        <div className="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.25em] mb-1 font-display">{format(date, 'yyyy')}</div>
+                        <h3 className="text-3xl font-extrabold text-slate-950 dark:text-white font-display tracking-tight leading-none">{format(date, 'EEEE, MMM d')}</h3>
                     </div>
                     <button 
                         onClick={(e) => { e.stopPropagation(); vibrate(5); onClose(); }} 
-                        className="p-3 bg-slate-50 text-slate-400 rounded-2xl hover:bg-slate-100 active:scale-90 transition-all border border-slate-100"
+                        className="p-3 bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-90 transition-all border border-slate-100 dark:border-slate-700"
                     >
                         <X className="w-6 h-6" />
                     </button>
@@ -66,9 +66,9 @@ const DayActionSheet: React.FC<DayActionSheetProps> = ({ date, initialRecord, on
                     
                     <section>
                         <div className="flex items-center justify-between mb-6">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] font-display">Daily Status</label>
+                            <label className="text-[11px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em] font-display">Daily Status</label>
                             {status !== AttendanceStatus.UNMARKED && (
-                                <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider border border-indigo-100 font-display">Active</span>
+                                <span className="text-[10px] font-bold text-indigo-500 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-full uppercase tracking-wider border border-indigo-100 dark:border-indigo-800 font-display">Active</span>
                             )}
                         </div>
                         <div className="grid grid-cols-3 gap-4">
@@ -111,14 +111,14 @@ const DayActionSheet: React.FC<DayActionSheetProps> = ({ date, initialRecord, on
                     </section>
 
                     {status === AttendanceStatus.ABSENT && (
-                        <div className="animate-soft-in p-6 bg-slate-50 rounded-[32px] border border-slate-100">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4 block font-display">Reason for Leave</label>
+                        <div className="animate-soft-in p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[32px] border border-slate-100 dark:border-slate-800">
+                            <label className="text-[11px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest mb-4 block font-display">Reason for Leave</label>
                             <div className="flex flex-wrap gap-2.5">
                                 {Object.values(LeaveType).map(t => (
                                     <button 
                                         key={t}
                                         onClick={() => { vibrate(5); setLeaveType(t); }}
-                                        className={`px-6 py-3.5 text-xs font-bold rounded-2xl border transition-all font-display tracking-wide ${leaveType === t ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-100' : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-400'}`}
+                                        className={`px-6 py-3.5 text-xs font-bold rounded-2xl border transition-all font-display tracking-wide ${leaveType === t ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-100 dark:shadow-none' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-indigo-400'}`}
                                     >
                                         {t}
                                     </button>
@@ -129,50 +129,50 @@ const DayActionSheet: React.FC<DayActionSheetProps> = ({ date, initialRecord, on
 
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-4">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1 font-display">Shift</label>
+                            <label className="text-[11px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em] pl-1 font-display">Shift</label>
                             <div className="relative">
                                 <select 
                                     value={shift} 
                                     onChange={e => setShift(e.target.value as ShiftType)}
-                                    className="w-full p-5 bg-slate-50 border border-slate-100 rounded-[28px] text-sm font-bold text-slate-800 outline-none appearance-none focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-300 transition-all font-display"
+                                    className="w-full p-5 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[28px] text-sm font-bold text-slate-800 dark:text-slate-200 outline-none appearance-none focus:ring-4 focus:ring-indigo-500/10 focus:bg-white dark:focus:bg-slate-800 focus:border-indigo-300 transition-all font-display"
                                 >
                                     {Object.values(ShiftType).map(s => <option key={s} value={s}>{s}</option>)}
                                 </select>
-                                <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none rotate-90" />
+                                <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-600 pointer-events-none rotate-90" />
                             </div>
                         </div>
                         <div className="space-y-4">
-                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1 font-display">Overtime</label>
+                            <label className="text-[11px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em] pl-1 font-display">Overtime</label>
                             <div className="relative">
-                                <Clock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+                                <Clock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 dark:text-slate-600" />
                                 <input 
                                     type="number" 
                                     value={ot}
                                     onChange={e => setOt(e.target.value)}
                                     placeholder="0m"
-                                    className="w-full p-5 pl-14 bg-slate-50 border border-slate-100 rounded-[28px] text-sm font-bold text-slate-800 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-300 transition-all font-display"
+                                    className="w-full p-5 pl-14 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[28px] text-sm font-bold text-slate-800 dark:text-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:bg-white dark:focus:bg-slate-800 focus:border-indigo-300 transition-all font-display"
                                 />
                             </div>
                         </div>
                     </div>
 
                     <div className="space-y-4">
-                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1 font-display">Comments</label>
+                        <label className="text-[11px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em] pl-1 font-display">Comments</label>
                         <textarea 
                             value={notes} 
                             onChange={e => setNotes(e.target.value)}
                             placeholder="Briefly describe your day..."
-                            className="w-full p-6 bg-slate-50 border border-slate-100 rounded-[36px] text-sm font-medium text-slate-700 min-h-[160px] outline-none focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-300 resize-none transition-all leading-relaxed"
+                            className="w-full p-6 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[36px] text-sm font-medium text-slate-700 dark:text-slate-300 min-h-[160px] outline-none focus:ring-4 focus:ring-indigo-500/10 focus:bg-white dark:focus:bg-slate-800 focus:border-indigo-300 resize-none transition-all leading-relaxed"
                         />
                     </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-8 glass border-t border-slate-100">
+                <div className="absolute bottom-0 left-0 right-0 p-8 glass border-t border-slate-100 dark:border-slate-800">
                     <button 
                         onClick={handleSave}
                         disabled={saveState === 'SAVING'}
                         className={`w-full py-5 rounded-[28px] font-black text-base shadow-2xl glow-indigo transition-all flex items-center justify-center gap-3 active:scale-[0.97] disabled:grayscale font-display tracking-widest uppercase ${
-                            saveState === 'SAVING' ? 'bg-slate-900 text-white' : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                            saveState === 'SAVING' ? 'bg-slate-900 dark:bg-slate-700 text-white' : 'bg-indigo-600 text-white hover:bg-indigo-700'
                         }`}
                     >
                         {saveState === 'SAVING' ? (
@@ -204,11 +204,11 @@ interface StatusButtonProps {
 
 const StatusButton: React.FC<StatusButtonProps> = ({ active, icon, label, color, onClick }) => {
     const colorMap: Record<string, string> = {
-        emerald: 'text-emerald-700 bg-emerald-50 border-emerald-200 ring-emerald-100/50 shadow-emerald-100/30',
-        rose: 'text-rose-700 bg-rose-50 border-rose-200 ring-rose-100/50 shadow-rose-100/30',
-        amber: 'text-amber-700 bg-amber-50 border-amber-200 ring-amber-100/50 shadow-amber-100/30',
-        violet: 'text-violet-700 bg-violet-50 border-violet-200 ring-violet-100/50 shadow-violet-100/30',
-        slate: 'text-slate-700 bg-slate-100/50 border-slate-200 ring-slate-100 shadow-slate-100/30',
+        emerald: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800 ring-emerald-100/50 dark:ring-emerald-900/20 shadow-emerald-100/30',
+        rose: 'text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30 border-rose-200 dark:border-rose-800 ring-rose-100/50 dark:ring-rose-900/20 shadow-rose-100/30',
+        amber: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800 ring-amber-100/50 dark:ring-amber-900/20 shadow-amber-100/30',
+        violet: 'text-violet-700 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/30 border-violet-200 dark:border-violet-800 ring-violet-100/50 dark:ring-violet-900/20 shadow-violet-100/30',
+        slate: 'text-slate-700 dark:text-slate-300 bg-slate-100/50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 ring-slate-100 dark:ring-slate-800 shadow-slate-100/30',
     };
 
     return (
@@ -217,10 +217,10 @@ const StatusButton: React.FC<StatusButtonProps> = ({ active, icon, label, color,
             className={`flex flex-col items-center justify-center p-4 rounded-[32px] border transition-all active:scale-[0.92] ${
                 active 
                 ? `${colorMap[color]} border-2 ring-[10px] shadow-2xl` 
-                : 'border-slate-50 bg-slate-50/40 text-slate-400 hover:bg-white hover:border-slate-300'
+                : 'border-slate-50 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-800/40 text-slate-400 dark:text-slate-600 hover:bg-white dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
             }`}
         >
-            <div className={`mb-3 p-1.5 rounded-2xl ${active ? 'bg-white/50' : ''}`}>
+            <div className={`mb-3 p-1.5 rounded-2xl ${active ? 'bg-white/50 dark:bg-slate-900/50' : ''}`}>
                 {icon}
             </div>
             <span className={`text-[10px] font-black uppercase tracking-tight font-display ${active ? '' : 'opacity-50'}`}>

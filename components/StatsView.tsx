@@ -70,16 +70,16 @@ const StatsView: React.FC<StatsViewProps> = ({ data }) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-slate-50 animate-fade-in">
+    <div className="h-full flex flex-col bg-slate-50 dark:bg-slate-950 animate-fade-in">
       
       {/* Month Selector */}
-      <div className="px-5 py-4 bg-white border-b flex justify-between items-center no-print">
-         <h2 className="text-2xl font-semibold text-slate-800">Insights</h2>
-         <div className="flex items-center gap-2 bg-slate-100 rounded-lg p-1">
+      <div className="px-5 py-4 bg-white dark:bg-slate-900 border-b dark:border-slate-800 flex justify-between items-center no-print">
+         <h2 className="text-2xl font-semibold text-slate-800 dark:text-white">Insights</h2>
+         <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
             <select 
                 value={currentDate.getMonth()} 
                 onChange={(e) => handleMonthChange(parseInt(e.target.value))}
-                className="bg-transparent text-sm font-medium text-slate-700 outline-none px-2 py-1"
+                className="bg-transparent text-sm font-medium text-slate-700 dark:text-slate-300 outline-none px-2 py-1"
             >
                 {Array.from({ length: 12 }).map((_, i) => (
                     <option key={i} value={i}>{format(new Date(2024, i, 1), 'MMMM')}</option>
@@ -105,14 +105,14 @@ const StatsView: React.FC<StatsViewProps> = ({ data }) => {
         </div>
 
         {/* Hero Card */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <div>
-                <div className="text-xs font-normal text-slate-500">Monthly Score</div>
+                <div className="text-xs font-normal text-slate-500 dark:text-slate-500">Monthly Score</div>
                 <div className="flex items-baseline mt-1">
-                    <span className="text-4xl font-bold text-slate-800">{percentage}</span>
-                    <span className="text-xl font-normal text-slate-400 ml-1">%</span>
+                    <span className="text-4xl font-bold text-slate-800 dark:text-white">{percentage}</span>
+                    <span className="text-xl font-normal text-slate-400 dark:text-slate-600 ml-1">%</span>
                 </div>
-                <div className="text-xs text-slate-500 mt-3 font-normal bg-slate-50 inline-block px-2.5 py-1 rounded-md border border-slate-100">
+                <div className="text-xs text-slate-500 dark:text-slate-500 mt-3 font-normal bg-slate-50 dark:bg-slate-800 inline-block px-2.5 py-1 rounded-md border border-slate-100 dark:border-slate-700">
                     {workingDays} Working Days
                 </div>
             </div>
@@ -126,8 +126,8 @@ const StatsView: React.FC<StatsViewProps> = ({ data }) => {
                         </PieChart>
                     </ResponsiveContainer>
                 ) : (
-                    <div className="w-full h-full rounded-full border-4 border-slate-100 flex items-center justify-center">
-                        <CalendarX className="text-slate-300 w-8 h-8" />
+                    <div className="w-full h-full rounded-full border-4 border-slate-100 dark:border-slate-800 flex items-center justify-center">
+                        <CalendarX className="text-slate-300 dark:text-slate-700 w-8 h-8" />
                     </div>
                 )}
             </div>
@@ -141,57 +141,59 @@ const StatsView: React.FC<StatsViewProps> = ({ data }) => {
         </div>
 
         {/* Detailed Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden mt-2">
-            <div className="p-4 border-b flex justify-between items-center bg-slate-50 print:bg-white">
-                <h3 className="text-lg font-medium text-slate-800">Daily Logs</h3>
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden mt-2">
+            <div className="p-4 border-b dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 print:bg-white">
+                <h3 className="text-lg font-medium text-slate-800 dark:text-white">Daily Logs</h3>
                 {tableData.length > 0 && (
-                    <button onClick={handlePrint} className="no-print flex items-center gap-2 text-xs font-medium text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100 active:scale-95 transition-all">
+                    <button onClick={handlePrint} className="no-print flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 active:scale-95 transition-all border border-blue-100 dark:border-blue-800">
                         <Printer className="w-4 h-4" /> Export PDF
                     </button>
                 )}
             </div>
-            <table className="w-full text-sm">
-                <thead className="bg-slate-50 text-slate-500 font-normal text-xs uppercase text-left">
-                    <tr>
-                        <th className="px-5 py-3 font-medium">Date</th>
-                        <th className="px-5 py-3 font-medium">Status</th>
-                        <th className="px-5 py-3 font-medium">Shift</th>
-                        <th className="px-5 py-3 font-medium">OT</th>
-                        <th className="px-5 py-3 font-medium">Notes</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                    {tableData.length === 0 ? (
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                    <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-normal text-xs uppercase text-left">
                         <tr>
-                            <td colSpan={5} className="px-5 py-12 text-center">
-                                <div className="flex flex-col items-center justify-center opacity-50">
-                                    <ClipboardList className="w-12 h-12 text-slate-300 mb-2" />
-                                    <p className="text-slate-400 font-normal">No records found</p>
-                                    <p className="text-xs text-slate-400 mt-1">Mark attendance in Calendar to see logs</p>
-                                </div>
-                            </td>
+                            <th className="px-5 py-3 font-medium">Date</th>
+                            <th className="px-5 py-3 font-medium">Status</th>
+                            <th className="px-5 py-3 font-medium">Shift</th>
+                            <th className="px-5 py-3 font-medium">OT</th>
+                            <th className="px-5 py-3 font-medium">Notes</th>
                         </tr>
-                    ) : (
-                        tableData.sort((a,b) => a.date.localeCompare(b.date)).map(record => (
-                            <tr key={record.date} className="hover:bg-slate-50">
-                                <td className="px-5 py-3.5 font-normal text-slate-700">{format(new Date(record.date), 'dd MMM')}</td>
-                                <td className="px-5 py-3.5">
-                                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide
-                                        ${record.status === AttendanceStatus.PRESENT ? 'bg-green-100 text-green-700' : 
-                                          record.status === AttendanceStatus.ABSENT ? 'bg-red-100 text-red-700' : 
-                                          record.status === AttendanceStatus.HALF_DAY ? 'bg-yellow-100 text-yellow-700' : 'bg-slate-100 text-slate-600'}
-                                    `}>
-                                        {record.status === AttendanceStatus.ABSENT && record.leaveType ? record.leaveType : record.status}
-                                    </span>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                        {tableData.length === 0 ? (
+                            <tr>
+                                <td colSpan={5} className="px-5 py-12 text-center">
+                                    <div className="flex flex-col items-center justify-center opacity-50">
+                                        <ClipboardList className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-2" />
+                                        <p className="text-slate-400 dark:text-slate-600 font-normal">No records found</p>
+                                        <p className="text-xs text-slate-400 dark:text-slate-600 mt-1">Mark attendance in Calendar to see logs</p>
+                                    </div>
                                 </td>
-                                <td className="px-5 py-3.5 text-slate-600 capitalize font-normal">{record.shift.toLowerCase()}</td>
-                                <td className="px-5 py-3.5 font-normal text-slate-600">{record.overtimeMinutes > 0 ? `${record.overtimeMinutes}m` : '-'}</td>
-                                <td className="px-5 py-3.5 text-slate-500 max-w-[150px] truncate font-normal">{record.notes || '-'}</td>
                             </tr>
-                        ))
-                    )}
-                </tbody>
-            </table>
+                        ) : (
+                            tableData.sort((a,b) => a.date.localeCompare(b.date)).map(record => (
+                                <tr key={record.date} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                    <td className="px-5 py-3.5 font-normal text-slate-700 dark:text-slate-300 whitespace-nowrap">{format(new Date(record.date), 'dd MMM')}</td>
+                                    <td className="px-5 py-3.5">
+                                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide
+                                            ${record.status === AttendanceStatus.PRESENT ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 
+                                              record.status === AttendanceStatus.ABSENT ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400' : 
+                                              record.status === AttendanceStatus.HALF_DAY ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}
+                                        `}>
+                                            {record.status === AttendanceStatus.ABSENT && record.leaveType ? record.leaveType : record.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-5 py-3.5 text-slate-600 dark:text-slate-400 capitalize font-normal">{record.shift.toLowerCase()}</td>
+                                    <td className="px-5 py-3.5 font-normal text-slate-600 dark:text-slate-400">{record.overtimeMinutes > 0 ? `${record.overtimeMinutes}m` : '-'}</td>
+                                    <td className="px-5 py-3.5 text-slate-500 dark:text-slate-500 max-w-[150px] truncate font-normal">{record.notes || '-'}</td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         {/* Signature Section (Print Only) */}
@@ -213,18 +215,17 @@ const StatsView: React.FC<StatsViewProps> = ({ data }) => {
 // Use explicit mappings instead of dynamic strings for robustness
 const StatsCard = ({ label, value, color }: { label: string, value: string | number, color: 'blue' | 'red' | 'purple' }) => {
     const colorClasses = {
-        blue: 'bg-blue-50 border-blue-100 text-blue-700',
-        red: 'bg-red-50 border-red-100 text-red-700',
-        purple: 'bg-purple-50 border-purple-100 text-purple-700'
+        blue: 'bg-blue-50 dark:bg-blue-950/30 border-blue-100 dark:border-blue-900 text-blue-700 dark:text-blue-400',
+        red: 'bg-red-50 dark:bg-red-950/30 border-red-100 dark:border-red-900 text-red-700 dark:text-red-400',
+        purple: 'bg-purple-50 dark:bg-purple-950/30 border-purple-100 dark:border-purple-900 text-purple-700 dark:text-purple-400'
     };
     
-    // Add text opacity classes manually for the label if needed, or use a consistent gray
-    const textClass = colorClasses[color] || 'bg-slate-50 border-slate-100 text-slate-700';
+    const textClass = colorClasses[color] || 'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-300';
 
     return (
-        <div className={`${textClass} p-4 rounded-xl border flex flex-col items-center justify-center text-center`}>
-            <div className="text-3xl font-bold">{value}</div>
-            <div className="text-xs font-normal opacity-70 mt-1">{label}</div>
+        <div className={`${textClass} p-4 rounded-xl border flex flex-col items-center justify-center text-center shadow-sm`}>
+            <div className="text-xl sm:text-2xl font-bold font-display">{value}</div>
+            <div className="text-[10px] font-black uppercase tracking-wider opacity-60 mt-1">{label}</div>
         </div>
     );
 };

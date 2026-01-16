@@ -13,6 +13,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
@@ -46,6 +47,10 @@
         font-family: 'Inter', sans-serif;
       }
       
+      .dark body {
+        background-color: #030712;
+      }
+
       .font-display {
         font-family: "Outfit", sans-serif;
       }
@@ -62,6 +67,9 @@
       ::-webkit-scrollbar-thumb {
         background: #e2e8f0;
         border-radius: 10px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #1e293b;
       }
 
       @keyframes sheetSlideUp {
@@ -89,6 +97,9 @@
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
       }
+      .dark .glass {
+        background: rgba(3, 7, 18, 0.82);
+      }
 
       /* Ultra modern button glow */
       .glow-indigo {
@@ -109,7 +120,7 @@
 }
 </script>
   </head>
-  <body class="bg-slate-50 text-slate-900 selection:bg-indigo-100 overflow-hidden h-screen w-screen font-sans">
+  <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-indigo-100 dark:selection:bg-indigo-900 overflow-hidden h-screen w-screen font-sans">
     <div id="root" class="h-full w-full"></div>
   </body>
 </html>

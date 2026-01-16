@@ -38,17 +38,17 @@ const CalendarView: React.FC<CalendarViewProps> = ({ data, onDateSelect }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#fdfdff] animate-fade-in relative">
-      <div className="bg-white px-8 pt-10 pb-6 border-b border-slate-100 shadow-[0_15px_50px_-25px_rgba(0,0,0,0.05)] z-10">
+    <div className="flex flex-col h-full bg-[#fdfdff] dark:bg-slate-950 animate-fade-in relative">
+      <div className="bg-white dark:bg-slate-900 px-8 pt-10 pb-6 border-b border-slate-100 dark:border-slate-800 shadow-[0_15px_50px_-25px_rgba(0,0,0,0.05)] z-10">
         <div className="flex items-center justify-between mb-8">
-            <button onClick={() => handleMonthChange('prev')} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl text-slate-400 active:scale-90 transition-all border border-slate-100">
+            <button onClick={() => handleMonthChange('prev')} className="p-3 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-2xl text-slate-400 active:scale-90 transition-all border border-slate-100 dark:border-slate-700">
                 <ChevronLeft className="w-6 h-6" />
             </button>
             <div className="text-center cursor-pointer active:opacity-60 transition-opacity" onClick={() => setCurrentDate(new Date())}>
-                <h2 className="text-3xl font-black text-slate-950 font-display tracking-tight leading-none">{format(currentDate, 'MMMM yyyy')}</h2>
-                <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] mt-2 font-display">Work Records</div>
+                <h2 className="text-3xl font-black text-slate-950 dark:text-white font-display tracking-tight leading-none">{format(currentDate, 'MMMM yyyy')}</h2>
+                <div className="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.25em] mt-2 font-display">Work Records</div>
             </div>
-            <button onClick={() => handleMonthChange('next')} className="p-3 bg-slate-50 hover:bg-slate-100 rounded-2xl text-slate-400 active:scale-90 transition-all border border-slate-100">
+            <button onClick={() => handleMonthChange('next')} className="p-3 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-2xl text-slate-400 active:scale-90 transition-all border border-slate-100 dark:border-slate-700">
                 <ChevronRight className="w-6 h-6" />
             </button>
         </div>
@@ -63,7 +63,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ data, onDateSelect }) => {
       <div className="flex-1 overflow-y-auto px-6 pt-8 pb-24">
         <div className="grid grid-cols-7 mb-6 px-1">
           {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((d, i) => (
-            <div key={i} className={`text-center text-[10px] font-black tracking-[0.15em] font-display ${i === 0 || i === 6 ? 'text-rose-400' : 'text-slate-300'}`}>{d}</div>
+            <div key={i} className={`text-center text-[10px] font-black tracking-[0.15em] font-display ${i === 0 || i === 6 ? 'text-rose-400' : 'text-slate-300 dark:text-slate-700'}`}>{d}</div>
           ))}
         </div>
 
@@ -92,42 +92,42 @@ const CalendarView: React.FC<CalendarViewProps> = ({ data, onDateSelect }) => {
 
 const StatPill = ({ label, count, color }: { label: string, count: number, color: 'emerald' | 'rose' | 'amber' }) => {
     const colors = {
-        emerald: 'bg-emerald-50 text-emerald-600 border-emerald-100 shadow-emerald-50/50',
-        rose: 'bg-rose-50 text-rose-600 border-rose-100 shadow-rose-50/50',
-        amber: 'bg-amber-50 text-amber-600 border-amber-100 shadow-amber-50/50'
+        emerald: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900 shadow-emerald-50/50',
+        rose: 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900 shadow-rose-50/50',
+        amber: 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900 shadow-amber-50/50'
     };
     return (
         <div className={`flex-1 flex flex-col items-center justify-center py-4 rounded-[28px] border transition-all shadow-sm ${colors[color]}`}>
             <span className="text-2xl font-black font-display leading-none">{count}</span>
-            <span className="text-[9px] font-black uppercase tracking-widest mt-1.5 opacity-60 font-display">{label}</span>
+            <span className="text-[9px] font-black uppercase tracking-widest mt-1.5 opacity-60 dark:opacity-40 font-display">{label}</span>
         </div>
     );
 };
 
 const DayCell: React.FC<{ day: Date; record?: any; isToday: boolean; onClick: () => void }> = ({ day, record, isToday, onClick }) => {
-    let bgClass = 'bg-white';
-    let borderClass = 'border-slate-100';
-    let textClass = 'text-slate-900';
+    let bgClass = 'bg-white dark:bg-slate-900';
+    let borderClass = 'border-slate-100 dark:border-slate-800';
+    let textClass = 'text-slate-900 dark:text-slate-300';
 
     if (record) {
         switch (record.status) {
-            case AttendanceStatus.PRESENT: bgClass = 'bg-emerald-50'; borderClass = 'border-emerald-100'; textClass = 'text-emerald-800 font-bold'; break;
-            case AttendanceStatus.ABSENT: bgClass = 'bg-rose-50'; borderClass = 'border-rose-100'; textClass = 'text-rose-800 font-bold'; break;
-            case AttendanceStatus.HALF_DAY: bgClass = 'bg-amber-50'; borderClass = 'border-amber-100'; textClass = 'text-amber-800 font-bold'; break;
-            case AttendanceStatus.HOLIDAY: bgClass = 'bg-violet-50'; borderClass = 'border-violet-100'; textClass = 'text-violet-800 font-bold'; break;
-            case AttendanceStatus.WEEKLY_OFF: bgClass = 'bg-slate-50'; borderClass = 'border-slate-200'; textClass = 'text-slate-400'; break;
+            case AttendanceStatus.PRESENT: bgClass = 'bg-emerald-50 dark:bg-emerald-900/20'; borderClass = 'border-emerald-100 dark:border-emerald-900'; textClass = 'text-emerald-800 dark:text-emerald-400 font-bold'; break;
+            case AttendanceStatus.ABSENT: bgClass = 'bg-rose-50 dark:bg-rose-900/20'; borderClass = 'border-rose-100 dark:border-rose-900'; textClass = 'text-rose-800 dark:text-rose-400 font-bold'; break;
+            case AttendanceStatus.HALF_DAY: bgClass = 'bg-amber-50 dark:bg-amber-900/20'; borderClass = 'border-amber-100 dark:border-amber-900'; textClass = 'text-amber-800 dark:text-amber-400 font-bold'; break;
+            case AttendanceStatus.HOLIDAY: bgClass = 'bg-violet-50 dark:bg-violet-900/20'; borderClass = 'border-violet-100 dark:border-violet-900'; textClass = 'text-violet-800 dark:text-violet-400 font-bold'; break;
+            case AttendanceStatus.WEEKLY_OFF: bgClass = 'bg-slate-50 dark:bg-slate-800/20'; borderClass = 'border-slate-200 dark:border-slate-700'; textClass = 'text-slate-400 dark:text-slate-600'; break;
         }
     }
 
     return (
         <div 
             onClick={onClick}
-            className={`aspect-square relative rounded-[20px] border flex flex-col items-center justify-center cursor-pointer transition-all active:scale-[0.85] shadow-[0_4px_12px_-6px_rgba(0,0,0,0.06)] ${bgClass} ${borderClass} ${isToday ? 'ring-[6px] ring-indigo-500/10 border-indigo-400 scale-[1.12] z-10 bg-white shadow-indigo-100/50' : ''}`}
+            className={`aspect-square relative rounded-[20px] border flex flex-col items-center justify-center cursor-pointer transition-all active:scale-[0.85] shadow-[0_4px_12px_-6px_rgba(0,0,0,0.06)] ${bgClass} ${borderClass} ${isToday ? 'ring-[6px] ring-indigo-500/10 border-indigo-400 scale-[1.12] z-10 bg-white dark:bg-slate-900 shadow-indigo-100/50' : ''}`}
         >
             <span className={`text-base font-bold font-display ${isToday ? 'text-indigo-600 font-black' : textClass}`}>{format(day, 'd')}</span>
             
             <div className="absolute top-1.5 right-1.5">
-                {record?.overtimeMinutes > 0 && <ArrowUpRight className="w-3.5 h-3.5 text-indigo-500 font-black" />}
+                {record?.overtimeMinutes > 0 && <ArrowUpRight className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 font-black" />}
             </div>
 
             <div className="mt-1 flex gap-0.5">

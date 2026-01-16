@@ -43,4 +43,5 @@ export interface AppData {
   records: Record<string, Record<string, DayRecord>>; // profileId -> date -> record
   activeProfileId: string;
   hasCompletedOnboarding?: boolean;
+  theme?: 'light' | 'dark';
 }

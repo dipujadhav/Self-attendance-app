@@ -13,6 +13,7 @@ const DEFAULT_DATA: AppData = {
   records: { default: {} },
   activeProfileId: 'default',
   hasCompletedOnboarding: false,
+  theme: 'light',
 };
 
 export const loadData = (): AppData => {
@@ -22,6 +23,7 @@ export const loadData = (): AppData => {
     const data = JSON.parse(raw);
     // Migration fallback if needed
     if (!data.profiles) return DEFAULT_DATA;
+    if (!data.theme) data.theme = 'light';
     return data;
   } catch (e) {
     console.error('Failed to load data', e);
