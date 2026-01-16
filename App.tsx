@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CalendarRange, PieChart, Settings, UserCircle, Sun, Moon } from 'lucide-react';
 import { AppData, DayRecord } from './types';
-import { loadData, saveData, vibrate } from './services/storage';
+import { loadData, saveData, vibrate, DEFAULT_PROFILE } from './services/storage';
 import CalendarView from './components/CalendarView';
 import StatsView from './components/StatsView';
 import SettingsView from './components/SettingsView';
@@ -11,8 +11,8 @@ import DayActionSheet from './components/DayActionSheet';
 import { format } from 'date-fns';
 
 const App: React.FC = () => {
-  // App Data State
-  const [data, setData] = useState<AppData>(loadData());
+  // App Data State with initial load
+  const [data, setData] = useState<AppData>(() => loadData());
   const [currentView, setCurrentView] = useState<'CALENDAR' | 'STATS' | 'SETTINGS'>('CALENDAR');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   
@@ -22,22 +22,21 @@ const App: React.FC = () => {
   
   // Handle Theme Application
   useEffect(() => {
-    if (data.theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    try {
+      if (data?.theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    } catch (e) {
+      console.warn("Theme application failed", e);
     }
-  }, [data.theme]);
+  }, [data?.theme]);
 
   // Handle Splash Screen Lifecycle (Total 3 seconds)
   useEffect(() => {
-    const fadeTimer = setTimeout(() => {
-      setIsFadingSplash(true);
-    }, 2600);
-
-    const removeTimer = setTimeout(() => {
-      setShowSplash(false);
-    }, 3000); 
+    const fadeTimer = setTimeout(() => setIsFadingSplash(true), 2600);
+    const removeTimer = setTimeout(() => setShowSplash(false), 3000); 
 
     return () => {
       clearTimeout(fadeTimer);
@@ -47,10 +46,13 @@ const App: React.FC = () => {
 
   // Persist data whenever it changes
   useEffect(() => {
-    saveData(data);
+    if (data) {
+      saveData(data);
+    }
   }, [data]);
 
   const handleUpdateRecord = (date: string, record: DayRecord) => {
+    if (!data) return;
     setData(prev => {
         const activeProfileId = prev.activeProfileId;
         const currentProfileRecords = prev.records[activeProfileId] || {};
@@ -69,11 +71,11 @@ const App: React.FC = () => {
   };
 
   const handleUpdateData = (newData: AppData) => {
-    setData(newData);
+    if (newData) setData(newData);
   };
 
   const toggleTheme = () => {
-    const newTheme = data.theme === 'dark' ? 'light' : 'dark';
+    const newTheme = data?.theme === 'dark' ? 'light' : 'dark';
     vibrate(15);
     setData(prev => ({ ...prev, theme: newTheme }));
   };
@@ -82,7 +84,8 @@ const App: React.FC = () => {
     setData(prev => ({ ...prev, hasCompletedOnboarding: true }));
   };
 
-  const activeProfile = data.profiles.find(p => p.id === data.activeProfileId) || data.profiles[0];
+  // Safe access to active profile
+  const activeProfile = (data?.profiles || []).find(p => p.id === data.activeProfileId) || data?.profiles?.[0] || DEFAULT_PROFILE;
 
   const handleNavClick = (view: typeof currentView) => {
     vibrate(5);
@@ -93,7 +96,7 @@ const App: React.FC = () => {
     return <SplashScreen isFadingOut={isFadingSplash} />;
   }
 
-  if (data.hasCompletedOnboarding === false) {
+  if (data?.hasCompletedOnboarding === false) {
     return <IntroView onComplete={handleOnboardingComplete} />;
   }
 
@@ -104,11 +107,11 @@ const App: React.FC = () => {
       <div className="px-8 py-6 bg-white dark:bg-slate-950 border-b border-slate-50 dark:border-slate-900 flex justify-between items-center z-10 no-print">
         <div className="flex items-center gap-4">
             <div className={`w-12 h-12 rounded-[20px] bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-black font-display text-2xl border border-indigo-100 dark:border-indigo-800 shadow-sm`}>
-                {activeProfile.name.charAt(0)}
+                {activeProfile?.name?.charAt(0) || 'J'}
             </div>
             <div>
                 <h1 className="text-2xl font-black text-slate-950 dark:text-white font-display tracking-tight leading-none">Self Log</h1>
-                <div className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.3em] mt-1.5 font-display">{activeProfile.name}</div>
+                <div className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.3em] mt-1.5 font-display">{activeProfile?.name || 'Main Job'}</div>
             </div>
         </div>
         <div className="flex gap-2">
@@ -116,7 +119,7 @@ const App: React.FC = () => {
                 onClick={toggleTheme} 
                 className="p-3 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[18px] text-slate-400 dark:text-slate-500 active:scale-95 transition-all hover:bg-slate-100 dark:hover:bg-slate-800"
             >
-                {data.theme === 'dark' ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+                {data?.theme === 'dark' ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
             </button>
             <button onClick={() => handleNavClick('SETTINGS')} className="p-3 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[18px] text-slate-400 dark:text-slate-500 active:scale-95 transition-all hover:bg-slate-100 dark:hover:bg-slate-800">
                 <UserCircle className="w-6 h-6" />
@@ -135,7 +138,7 @@ const App: React.FC = () => {
       {selectedDate && (
         <DayActionSheet 
           date={selectedDate}
-          initialRecord={data.records[data.activeProfileId]?.[format(selectedDate, 'yyyy-MM-dd')]}
+          initialRecord={data?.records?.[data.activeProfileId]?.[format(selectedDate, 'yyyy-MM-dd')]}
           onClose={() => setSelectedDate(null)}
           onSave={(record) => handleUpdateRecord(record.date, record)}
         />
