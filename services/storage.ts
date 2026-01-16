@@ -22,45 +22,37 @@ export const loadData = (): AppData => {
     if (!raw) return { ...DEFAULT_DATA };
     
     let data = JSON.parse(raw);
-    
-    // Defensive structural verification
     if (!data || typeof data !== 'object') return { ...DEFAULT_DATA };
     
-    // Ensure critical arrays and objects exist
+    // Ensure nested structures are robust
     if (!Array.isArray(data.profiles) || data.profiles.length === 0) {
       data.profiles = [DEFAULT_PROFILE];
     }
     
     if (!data.records || typeof data.records !== 'object') {
-      data.records = {};
-      data.profiles.forEach((p: any) => {
-        if (p.id) data.records[p.id] = {};
-      });
+      data.records = { [data.profiles[0].id || 'default']: {} };
     }
 
-    if (!data.activeProfileId || !data.profiles.some((p: any) => p.id === data.activeProfileId)) {
+    if (!data.activeProfileId) {
       data.activeProfileId = data.profiles[0].id;
     }
     
-    if (typeof data.hasCompletedOnboarding !== 'boolean') {
-      data.hasCompletedOnboarding = false;
-    }
-    
+    if (typeof data.hasCompletedOnboarding !== 'boolean') data.hasCompletedOnboarding = false;
     if (!data.theme) data.theme = 'light';
     
     return data as AppData;
   } catch (e) {
-    console.warn('Storage load failed, resetting to defaults.', e);
+    console.warn('Storage repair initiated due to error:', e);
     return { ...DEFAULT_DATA };
   }
 };
 
 export const saveData = (data: AppData) => {
   try {
-    if (!data || typeof data !== 'object') return;
+    if (!data) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (e) {
-    console.error('Storage save failed.', e);
+    console.error('Storage save failed:', e);
   }
 };
 
@@ -87,13 +79,13 @@ export const importData = (file: File): Promise<AppData> => {
         if (data && typeof data === 'object' && Array.isArray(data.profiles)) {
           resolve(data as AppData);
         } else {
-          reject(new Error('Format Mismatch'));
+          reject(new Error('Invalid File Format'));
         }
       } catch (err) {
         reject(err);
       }
     };
-    reader.onerror = () => reject(new Error('File access error'));
+    reader.onerror = () => reject(new Error('File Load Error'));
     reader.readAsText(file);
   });
 };
