@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Self Attendance Pro</title>
+    
+    <!-- Modern Font Pairing: Outfit (Modern/Tech) and Inter (Clean/Legible) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Inter"', 'system-ui', 'sans-serif'],
+              display: ['"Outfit"', 'sans-serif'],
+            },
+            colors: {
+              brand: {
+                50: '#f5f3ff',
+                100: '#ede9fe',
+                600: '#6366f1', // Vibrant Indigo
+                700: '#4f46e5',
+                950: '#030712',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      :root {
+        --primary: #6366f1;
+        --surface: #ffffff;
+        --bg: #fdfdff;
+      }
+      body {
+        background-color: var(--bg);
+        overscroll-behavior-y: none;
+        -webkit-tap-highlight-color: transparent;
+        font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+        font-family: 'Inter', sans-serif;
+      }
+      
+      .font-display {
+        font-family: "Outfit", sans-serif;
+      }
+
+      * {
+        transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 250ms;
+      }
+
+      ::-webkit-scrollbar {
+        width: 3px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+      }
+
+      @keyframes sheetSlideUp {
+        from { transform: translateY(100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      .animate-sheet-up {
+        animation: sheetSlideUp 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+      }
+
+      @keyframes softFadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-soft-in {
+        animation: softFadeIn 0.4s ease-out forwards;
+      }
+
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+
+      .glass {
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+
+      /* Ultra modern button glow */
+      .glow-indigo {
+        box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.4);
+      }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "date-fns": "https://esm.sh/date-fns@^4.1.0",
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.37.0"
+  }
+}
+</script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 selection:bg-indigo-100 overflow-hidden h-screen w-screen font-sans">
+    <div id="root" class="h-full w-full"></div>
+  </body>
+</html>
