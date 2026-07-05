@@ -1,124 +1,161 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { CalendarRange, PieChart, Settings, UserCircle, Sun, Moon } from 'lucide-react';
-import { AppData, DayRecord } from './types';
-import { loadData, saveData, vibrate, DEFAULT_PROFILE } from './services/storage';
-import CalendarView from './components/CalendarView';
-import StatsView from './components/StatsView';
-import SettingsView from './components/SettingsView';
-import IntroView from './components/IntroView';
-import SplashScreen from './components/SplashScreen';
-import DayActionSheet from './components/DayActionSheet';
-import { format } from 'date-fns';
+import React, { useMemo, useRef, useState } from 'react';
+import { BadgeCheck, Download, ImagePlus, RotateCcw, Scissors, ShieldCheck, Sparkles } from 'lucide-react';
+
+const PASSPORT_WIDTH_MM = 26;
+const PASSPORT_HEIGHT_MM = 31;
+const DPI = 300;
+const MM_PER_INCH = 25.4;
+const OUTPUT_WIDTH_PX = Math.round((PASSPORT_WIDTH_MM / MM_PER_INCH) * DPI);
+const OUTPUT_HEIGHT_PX = Math.round((PASSPORT_HEIGHT_MM / MM_PER_INCH) * DPI);
 
 const App: React.FC = () => {
-  const [data, setData] = useState<AppData | null>(null);
-  const [currentView, setCurrentView] = useState<'CALENDAR' | 'STATS' | 'SETTINGS'>('CALENDAR');
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [showSplash, setShowSplash] = useState(true);
-  const [isFadingSplash, setIsFadingSplash] = useState(false);
+  const [sourceImage, setSourceImage] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string>('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Initialize data on mount
-  useEffect(() => {
-    setData(loadData());
-  }, []);
-  
-  useEffect(() => {
-    if (data?.theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+  const previewStyle = useMemo(() => ({
+    aspectRatio: `${PASSPORT_WIDTH_MM} / ${PASSPORT_HEIGHT_MM}`,
+  }), []);
+
+  const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSourceImage(reader.result as string);
+      setFileName(file.name);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const downloadPreview = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = OUTPUT_WIDTH_PX;
+    canvas.height = OUTPUT_HEIGHT_PX;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.strokeStyle = '#111827';
+    context.lineWidth = 3;
+    context.strokeRect(1.5, 1.5, canvas.width - 3, canvas.height - 3);
+
+    if (!sourceImage) {
+      saveCanvas(canvas);
+      return;
     }
-  }, [data?.theme]);
 
-  useEffect(() => {
-    const fadeTimer = setTimeout(() => setIsFadingSplash(true), 2600);
-    const removeTimer = setTimeout(() => setShowSplash(false), 3000); 
-    return () => { clearTimeout(fadeTimer); clearTimeout(removeTimer); };
-  }, []);
+    const image = new Image();
+    image.onload = () => {
+      const scale = Math.max(canvas.width / image.width, canvas.height / image.height);
+      const width = image.width * scale;
+      const height = image.height * scale;
+      const x = (canvas.width - width) / 2;
+      const y = (canvas.height - height) / 2;
+      context.drawImage(image, x, y, width, height);
+      context.strokeStyle = '#111827';
+      context.lineWidth = 3;
+      context.strokeRect(1.5, 1.5, canvas.width - 3, canvas.height - 3);
+      saveCanvas(canvas);
+    };
+    image.src = sourceImage;
+  };
 
-  useEffect(() => {
-    if (data) saveData(data);
-  }, [data]);
-
-  const activeProfile = useMemo(() => {
-    if (!data) return DEFAULT_PROFILE;
-    return (data.profiles || []).find(p => p.id === data.activeProfileId) || data.profiles?.[0] || DEFAULT_PROFILE;
-  }, [data]);
-
-  if (showSplash) return <SplashScreen isFadingOut={isFadingSplash} />;
-  if (!data) return <div style={{padding: 20}}>Initialising application...</div>;
-
-  if (data.hasCompletedOnboarding === false) {
-    return <IntroView onComplete={() => setData({...data, hasCompletedOnboarding: true})} />;
-  }
-
-  const handleUpdateRecord = (date: string, record: DayRecord) => {
-    if (!data) return;
-    const activeId = data.activeProfileId || 'default';
-    const profileRecords = data.records?.[activeId] || {};
-    setData({
-      ...data,
-      records: {
-        ...data.records,
-        [activeId]: { ...profileRecords, [date]: record }
-      }
-    });
-    setSelectedDate(null);
+  const saveCanvas = (canvas: HTMLCanvasElement) => {
+    const link = document.createElement('a');
+    link.download = 'passport-photo-26x31mm.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-lg mx-auto bg-white dark:bg-slate-950 shadow-2xl relative overflow-hidden font-sans">
-      <div className="px-8 py-6 border-b dark:border-slate-900 flex justify-between items-center z-10">
-        <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-[20px] bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 font-display text-2xl border border-indigo-100 dark:border-indigo-800">
-                {activeProfile?.name?.charAt(0) || 'J'}
-            </div>
+    <main className="min-h-screen bg-slate-50 text-slate-950">
+      <section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-8 px-5 py-8 md:px-8 lg:flex-row lg:items-center">
+        <div className="flex-1 space-y-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white px-4 py-2 text-sm font-bold text-blue-700 shadow-sm">
+            <ShieldCheck className="h-4 w-4" /> Dedicated passport photo workspace
+          </div>
+
+          <div className="space-y-4">
+            <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-6xl">
+              Passport Photo Generator
+            </h1>
+            <p className="max-w-2xl text-lg leading-8 text-slate-600">
+              Create a clean 26 x 31 mm passport photo preview with a pure white canvas, centered image placement, and thin black border. This repository is now branded only for passport photo generation.
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Feature icon={<Scissors />} title="26 x 31 mm" description="Passport-size output target at 300 DPI." />
+            <Feature icon={<Sparkles />} title="White background" description="Clean document-style canvas." />
+            <Feature icon={<BadgeCheck />} title="Border guide" description="Thin black outline for print trimming." />
+          </div>
+        </div>
+
+        <div className="w-full flex-1 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-200/70">
+          <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-                <h1 className="text-2xl font-black text-slate-950 dark:text-white font-display tracking-tight leading-none">Self Log</h1>
-                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 font-display">{activeProfile?.name || 'Main Job'}</div>
+              <h2 className="text-xl font-black">Photo Preview</h2>
+              <p className="text-sm text-slate-500">{OUTPUT_WIDTH_PX} x {OUTPUT_HEIGHT_PX}px at 300 DPI</p>
             </div>
-        </div>
-        <div className="flex gap-2">
-            <button onClick={() => setData({...data, theme: data.theme === 'dark' ? 'light' : 'dark'})} className="p-3 bg-slate-50 dark:bg-slate-900 rounded-[18px] text-slate-400 active:scale-95 transition-all">
-                {data.theme === 'dark' ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 transition active:scale-95"
+            >
+              <ImagePlus className="h-4 w-4" /> Upload
             </button>
-            <button onClick={() => setCurrentView('SETTINGS')} className="p-3 bg-slate-50 dark:bg-slate-900 rounded-[18px] text-slate-400 active:scale-95 transition-all">
-                <UserCircle className="w-6 h-6" />
+          </div>
+
+          <div className="mx-auto max-w-sm rounded-3xl bg-slate-100 p-5">
+            <div style={previewStyle} className="relative mx-auto w-full overflow-hidden border border-black bg-white shadow-inner">
+              {sourceImage ? (
+                <img src={sourceImage} alt="Uploaded passport preview" className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center gap-3 p-8 text-center text-slate-400">
+                  <ImagePlus className="h-12 w-12" />
+                  <p className="text-sm font-semibold">Upload a portrait to start passport photo preparation.</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <input ref={inputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
+
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={() => { setSourceImage(null); setFileName(''); if (inputRef.current) inputRef.current.value = ''; }}
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95"
+            >
+              <RotateCcw className="h-4 w-4" /> Reset
             </button>
+            <button
+              type="button"
+              onClick={downloadPreview}
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition active:scale-95"
+            >
+              <Download className="h-4 w-4" /> Download PNG
+            </button>
+          </div>
+
+          {fileName && <p className="mt-4 truncate text-center text-xs font-semibold text-slate-400">Loaded: {fileName}</p>}
         </div>
-      </div>
-
-      <div className="flex-1 overflow-hidden relative bg-[#fdfdff] dark:bg-slate-950">
-        {currentView === 'CALENDAR' && <CalendarView data={data} onDateSelect={setSelectedDate} />}
-        {currentView === 'STATS' && <StatsView data={data} />}
-        {currentView === 'SETTINGS' && <SettingsView data={data} onUpdateData={setData} />}
-      </div>
-
-      {selectedDate && (
-        <DayActionSheet 
-          date={selectedDate}
-          initialRecord={data.records?.[data.activeProfileId]?.[format(selectedDate, 'yyyy-MM-dd')]}
-          onClose={() => setSelectedDate(null)}
-          onSave={(record) => handleUpdateRecord(record.date, record)}
-        />
-      )}
-
-      <div className="bg-white dark:bg-slate-950 border-t dark:border-slate-900 px-10 py-4 flex justify-between items-center z-20 pb-safe shadow-2xl">
-        <NavButton active={currentView === 'CALENDAR'} onClick={() => setCurrentView('CALENDAR')} icon={<CalendarRange className="w-6 h-6" />} label="Log" />
-        <NavButton active={currentView === 'STATS'} onClick={() => setCurrentView('STATS')} icon={<PieChart className="w-6 h-6" />} label="Metrics" />
-        <NavButton active={currentView === 'SETTINGS'} onClick={() => setCurrentView('SETTINGS')} icon={<Settings className="w-6 h-6" />} label="Setup" />
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 
-const NavButton: React.FC<{ active: boolean; onClick: () => void; icon: React.ReactNode; label: string }> = ({ active, onClick, icon, label }) => (
-    <button onClick={onClick} className={`flex flex-col items-center justify-center w-20 py-1 transition-all active:scale-90 ${active ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-300 dark:text-slate-700'}`}>
-        <div className={`p-2.5 rounded-[22px] ${active ? 'bg-indigo-50 dark:bg-indigo-950 ring-8 ring-indigo-50/40 dark:ring-indigo-900/20 translate-y-[-6px]' : ''}`}>
-            {icon}
-        </div>
-        <span className="text-[10px] font-black mt-2 uppercase tracking-widest font-display">{label}</span>
-    </button>
+const Feature: React.FC<{ icon: React.ReactNode; title: string; description: string }> = ({ icon, title, description }) => (
+  <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+      {icon}
+    </div>
+    <h3 className="font-black text-slate-900">{title}</h3>
+    <p className="mt-1 text-sm leading-6 text-slate-500">{description}</p>
+  </div>
 );
 
 export default App;

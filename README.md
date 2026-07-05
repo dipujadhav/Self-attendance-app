@@ -1,49 +1,45 @@
-# Self Attendance Pro 🗓️
+# Passport Photo Generator 📸
 
-A premium, professional, and offline-first personal attendance tracker designed for high-performance mobile and web experiences.
+A dedicated Passport Photo Generator project for preparing clean, print-ready passport photo previews. The repository now represents only the passport photo workflow.
 
-## ✨ Key Features
+## What this project does
 
-- **Intuitive Daily Logging**: Quickly mark attendance (Present, Absent, Half Day, Holiday, Weekly Off) with a single tap.
-- **Advanced Shift Management**: Support for Morning, Afternoon, Night, and General shifts.
-- **Overtime Tracking**: Log precise overtime minutes for accurate work-hour tracking.
-- **Professional Insights**: Visualize your monthly performance with interactive charts and attendance scores.
-- **Multi-Profile System**: Manage different jobs, projects, or subjects within the same app.
-- **Report Export**: Generate and print professional monthly attendance reports (PDF-ready).
-- **AI-Powered Creative Tools**:
-  - **Veo Video Animator**: Animate images into cinematic videos using Google's Veo model.
-  - **Pro Image Generation**: Create high-resolution images from text prompts using Gemini 3.
-- **Privacy First**: All data resides strictly on your device. No servers, no tracking.
-- **Backup & Restore**: Simple JSON-based export and import system for data safety.
+- Accepts a portrait image in the browser.
+- Displays it inside a 26 x 31 mm passport-photo preview frame.
+- Uses a pure white canvas with a thin black border for print trimming guidance.
+- Exports a PNG sized for 300 DPI output.
+- Provides a clean React + Vite foundation for future passport-photo engine milestones.
 
-## 🛠️ Technology Stack
+## Project scope
 
-- **Framework**: [React 19](https://react.dev/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Typography**: Outfit (Display) & Inter (UI)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Visualizations**: [Recharts](https://recharts.org/)
-- **Date Management**: [date-fns](https://date-fns.org/)
-- **AI Integration**: [Google Gemini SDK (@google/genai)](https://ai.google.dev/)
+This repository is dedicated to Passport Photo Generator functionality only, with a clean structure focused on passport-photo preparation and export milestones.
 
-## 🚀 How to Use
+## Planned milestones
 
-1. **Onboarding**: On first launch, follow the simple intro to understand the core features.
-2. **Logging**: Tap any date on the calendar to open the Action Sheet. Select your status, shift, and add optional notes or overtime.
-3. **Analytics**: Switch to the **Metrics** tab to see your monthly "Attendance Score" and detailed statistics.
-4. **Exporting**: In the Metrics tab, tap "Export PDF" to generate a printable report of your logs.
-5. **Customization**: Use the **Setup** tab to add new work profiles, change the active job, or backup your database.
+1. **Core passport photo engine**: background removal, face detection, alignment, centering, and 26 x 31 mm output.
+2. **Manual preview controls**: crop, zoom, rotate, and reposition.
+3. **Print exports**: A4 portrait sheets, 12-photo layout, PDF export, and JPG export.
+4. **Polish**: multiple people per sheet, performance improvements, and production-ready UX.
 
-## 🤖 AI Tools Integration
+## Technology stack
 
-The app features cutting-edge integration with Google Gemini:
-- **API Key**: When using AI tools for the first time, you will be prompted to select your own API key.
-- **Functionality**: Access the AI creative suite via the navigation to generate assets or animate your photos.
+- React 19
+- Vite
+- TypeScript
+- Tailwind CSS via CDN for the current lightweight prototype
+- Lucide React icons
 
-## 👨‍💻 Developed By
+## Getting started
 
-**Dipak Jadhav**
-*Senior UI/UX Engineer*
+```bash
+npm install
+npm run dev
+```
 
----
-*Built with a focus on aesthetics, accessibility, and offline reliability.*
+## Build
+
+```bash
+npm run build
+```
+
+The production build is emitted to `dist/`.
